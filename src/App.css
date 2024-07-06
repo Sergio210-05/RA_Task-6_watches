@@ -1,0 +1,131 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #fff;
+  display: flex;
+  /* justify-content: center; */
+  /* align-items: center; */
+  min-height: 100vh;
+  width: 100%;
+}
+
+.add-clock-form {
+  display: flex;
+  margin-bottom: 100px;
+}
+
+.clock-container {
+  width: 200px;
+  position: relative;
+}
+
+.clock-name {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.close {
+  width: inherit;
+  position: absolute;
+  display: flex;
+  flex-direction: row-reverse;
+  vertical-align: top;
+}
+
+.close-button {
+  width: 20px;
+  height: 20px;
+  /* border-radius: 10px; */
+}
+
+.clock-face {
+  height: 200px;
+  width: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: black solid 1px;
+  border-radius: 50%;
+  position: relative;
+
+  .second {
+    position: absolute;
+  
+    .second-hand {
+      width: 180px;
+      height: 180px;
+      display: flex;
+      justify-content: center;
+      position: relative;
+      border-radius: 50%;
+  
+      &:before {
+        content: '';
+        position: absolute;
+        width: 2px;
+        height: 90px;
+        background-color: black;
+        z-index: 5;
+        border-radius: 1px 1px 0px 0px;
+      }
+    }
+  }
+
+  .minute {
+    position: absolute;
+  
+    .minute-hand {
+      width: 160px;
+      height: 160px;
+      display: flex;
+      justify-content: center;
+      position: relative;
+      border-radius: 50%;
+  
+      &:before {
+        content: '';
+        position: absolute;
+        width: 4px;
+        height: 80px;
+        background-color: black;
+        z-index: 10;
+        border-radius: 2px 2px 2px 2px;
+      }
+    }
+  }
+
+  .hour {
+    position: absolute;
+  
+    .hour-hand {
+      width: 100px;
+      height: 100px;
+      display: flex;
+      justify-content: center;
+      position: relative;
+      border-radius: 50%;
+  
+      &:before {
+        content: '';
+        position: absolute;
+        width: 6px;
+        height: 50px;
+        background-color: black;
+        z-index: 15;
+        border-radius: 3px 3px 3px 3px;
+        background-color: red;
+        border: red;
+      }
+    }
+  }
+
+}
+
+
+
