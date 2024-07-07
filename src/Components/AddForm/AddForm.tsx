@@ -1,33 +1,53 @@
 import React, { Component } from 'react'
 import Clock from '../Clock/Clock'
 
+type clockType = {title: string, timeZone: number, removed: boolean, currentTime?: number}
+
 export default class AddForm extends Component {
   clockNameRef: React.RefObject<HTMLInputElement>
   clockZoneRef: React.RefObject<HTMLInputElement>
-  clocksAdded: Clock[]
+  clocksAdded: clockType[]
+  clockRefs: []
 
   constructor(props) {
     super(props)
     this.clockNameRef = React.createRef()
     this.clockZoneRef = React.createRef()
     this.clocksAdded = []
+    this.clockRefs = []
     this.state = {
       clocksAdded: this.clocksAdded
     }
-    // console.log(this.state)
   }
 
   handleClick = (event: React.FormEvent<HTMLButtonElement>) => {
-    // event.preventDefault()
+    console.log(this.state.clocksAdded)
+    const currentTime = Date.now()
     if (this.clockNameRef.current?.value) {
-      
-      this.setState({clocksAdded: this.clocksAdded.push({
+      this.clocksAdded.push({
         title: this.clockNameRef.current?.value,
-        timeZone: +this.clockZoneRef.current.value | 0
-      })})
-      console.log(this.state.clocksAdded)
+        timeZone: +this.clockZoneRef.current.value || 0,
+        removed: false,
+        currentTime: currentTime
+      })
+      this.setState({clocksAdded: this.clocksAdded})
     }
 
+  }
+
+  removeClock(reference) {
+    console.log(reference.current.props.currentTime)
+    const index = this.clocksAdded.findIndex( element => {
+      return(
+        element.currentTime === reference.current.props.currentTime
+      )
+    })
+    console.log(index)
+    this.clocksAdded.splice(index, 1)
+    console.log(this.state.clocksAdded)
+    console.log(this.clocksAdded)
+    this.setState({clocksAdded: this.clocksAdded})
+    console.log(this.state.clocksAdded)
   }
 
   componentDidMount(): void {
@@ -36,7 +56,6 @@ export default class AddForm extends Component {
 
   componentDidUpdate(prevProps: Readonly<{}>, prevState: Readonly<{}>, snapshot?: any): void {
     console.log('Update')
-    // console.log(this.clockZoneRef.current?.value)
   }
 
   render() {
@@ -51,7 +70,6 @@ export default class AddForm extends Component {
             title='Название' 
             className='clock-title-input' 
             ref={this.clockNameRef} 
-            // onSubmit={this.handleSubmit}
             defaultValue={'Moscow'}
             />
           </div>
@@ -63,7 +81,6 @@ export default class AddForm extends Component {
             title='Временная зона' 
             className='clock-timezone-input' 
             ref={this.clockZoneRef} 
-            // onSubmit={this.handleSubmit}
             defaultValue={3}/>
           </div>
 
@@ -73,10 +90,14 @@ export default class AddForm extends Component {
           {this.props.children}
         </div>
         <div className=' customer-clockscontainer'>
-          {this.clocksAdded.map((clock, index) => {
+          {this.state.clocksAdded.map((clock, index) => {
+            console.log(this.state.clocksAdded)
+            this.clockRefs.push(React.createRef())
             return(
-              // <Clock {...clock} key={index}/>
-              <Clock key={index} {...clock}/>
+              clock.removed ? '' : <Clock key={index}  
+              removeHandler={() => this.removeClock(this.clockRefs[index])} 
+              ref={this.clockRefs[index]} 
+              {...clock}/>
             )
           })}
         </div>
