@@ -91,10 +91,11 @@ export default class AddForm extends Component {
         </div>
         <div className=' customer-clockscontainer'>
           {this.state.clocksAdded.map((clock, index) => {
-            console.log(this.state.clocksAdded)
+            // console.log(this.state.clocksAdded)
             this.clockRefs.push(React.createRef())
+            // const clockRef = React.createRef()
             return(
-              clock.removed ? '' : <Clock key={index}  
+              <Clock key={clock.currentTime}  
               removeHandler={() => this.removeClock(this.clockRefs[index])} 
               ref={this.clockRefs[index]} 
               {...clock}/>
