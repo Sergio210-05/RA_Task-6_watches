@@ -7,14 +7,14 @@ export default class AddForm extends Component {
   clockNameRef: React.RefObject<HTMLInputElement>
   clockZoneRef: React.RefObject<HTMLInputElement>
   clocksAdded: clockType[]
-  clockRefs: []
+  clockRefs: {}
 
   constructor(props) {
     super(props)
     this.clockNameRef = React.createRef()
     this.clockZoneRef = React.createRef()
     this.clocksAdded = []
-    this.clockRefs = []
+    this.clockRefs = {}
     this.state = {
       clocksAdded: this.clocksAdded
     }
@@ -36,10 +36,10 @@ export default class AddForm extends Component {
   }
 
   removeClock(reference) {
-    console.log(reference.current.props.currentTime)
+    console.log(reference.props)
     const index = this.clocksAdded.findIndex( element => {
       return(
-        element.currentTime === reference.current.props.currentTime
+        element.currentTime === reference.props.currentTime
       )
     })
     console.log(index)
@@ -92,12 +92,12 @@ export default class AddForm extends Component {
         <div className=' customer-clockscontainer'>
           {this.state.clocksAdded.map((clock, index) => {
             // console.log(this.state.clocksAdded)
-            this.clockRefs.push(React.createRef())
+            // this.clockRefs.push(React.createRef())
             // const clockRef = React.createRef()
             return(
               <Clock key={clock.currentTime}  
-              removeHandler={() => this.removeClock(this.clockRefs[index])} 
-              ref={this.clockRefs[index]} 
+              removeHandler={() => this.removeClock(this.clockRefs[clock.currentTime])} 
+              ref={ref => this.clockRefs[clock.currentTime] = ref} 
               {...clock}/>
             )
           })}
