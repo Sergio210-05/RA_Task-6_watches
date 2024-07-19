@@ -6,56 +6,44 @@ type clockType = {title: string, timeZone: number, removed: boolean, currentTime
 export default class AddForm extends Component {
   clockNameRef: React.RefObject<HTMLInputElement>
   clockZoneRef: React.RefObject<HTMLInputElement>
-  clocksAdded: clockType[]
-  clockRefs: {}
+  state: {clocksAdded: clockType[]}
 
-  constructor(props) {
+  constructor(props: {}) {
     super(props)
     this.clockNameRef = React.createRef()
     this.clockZoneRef = React.createRef()
-    this.clocksAdded = []
-    this.clockRefs = {}
     this.state = {
-      clocksAdded: this.clocksAdded
+      clocksAdded: [{
+        title: 'London',
+        timeZone: 0,
+        removed: false,
+        currentTime: Date.now()
+      }]
     }
   }
 
-  handleClick = (event: React.FormEvent<HTMLButtonElement>) => {
-    console.log(this.state.clocksAdded)
+  handleClick = (): void => {
     const currentTime = Date.now()
     if (this.clockNameRef.current?.value) {
-      this.clocksAdded.push({
+      const newClock = {
         title: this.clockNameRef.current?.value,
-        timeZone: +this.clockZoneRef.current.value || 0,
+        timeZone: Number(this.clockZoneRef.current?.value) || 0,
         removed: false,
         currentTime: currentTime
-      })
-      this.setState({clocksAdded: this.clocksAdded})
+      }
+      const clocksAdded = this.state.clocksAdded
+      clocksAdded.push(newClock)
+      this.setState({clocksAdded: clocksAdded})
+      this.clockNameRef.current.value = ''
+      if (this.clockZoneRef.current?.value) {
+        this.clockZoneRef.current.value = ''
+      }
     }
 
   }
 
-  removeClock(reference) {
-    console.log(reference.props)
-    const index = this.clocksAdded.findIndex( element => {
-      return(
-        element.currentTime === reference.props.currentTime
-      )
-    })
-    console.log(index)
-    this.clocksAdded.splice(index, 1)
-    console.log(this.state.clocksAdded)
-    console.log(this.clocksAdded)
-    this.setState({clocksAdded: this.clocksAdded})
-    console.log(this.state.clocksAdded)
-  }
-
-  componentDidMount(): void {
-
-  }
-
-  componentDidUpdate(prevProps: Readonly<{}>, prevState: Readonly<{}>, snapshot?: any): void {
-    console.log('Update')
+  removeClock = (clockTime: number | undefined): void => {
+    this.setState({clocksAdded: this.state.clocksAdded.filter(clock => clock.currentTime != clockTime)})
   }
 
   render() {
@@ -70,7 +58,7 @@ export default class AddForm extends Component {
             title='Название' 
             className='clock-title-input' 
             ref={this.clockNameRef} 
-            defaultValue={'Moscow'}
+            placeholder='Введите название для часов'
             />
           </div>
           
@@ -81,23 +69,17 @@ export default class AddForm extends Component {
             title='Временная зона' 
             className='clock-timezone-input' 
             ref={this.clockZoneRef} 
-            defaultValue={3}/>
+            placeholder='Введите временную зону GMT+'
+            />
           </div>
 
           <button className='add-clock-button' type='submit' onClick={this.handleClick}>Добавить</button>
         </div>
-        <div className='clock-element greenwich-clock'>
-          {this.props.children}
-        </div>
         <div className=' customer-clockscontainer'>
-          {this.state.clocksAdded.map((clock, index) => {
-            // console.log(this.state.clocksAdded)
-            // this.clockRefs.push(React.createRef())
-            // const clockRef = React.createRef()
+          {this.state.clocksAdded.map((clock) => {
             return(
               <Clock key={clock.currentTime}  
-              removeHandler={() => this.removeClock(this.clockRefs[clock.currentTime])} 
-              ref={ref => this.clockRefs[clock.currentTime] = ref} 
+              removeHandler={() => this.removeClock(clock.currentTime)} 
               {...clock}/>
             )
           })}

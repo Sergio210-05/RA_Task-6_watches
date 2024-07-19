@@ -1,31 +1,32 @@
-import React, { Component, useRef, useState } from 'react'
+import { Component } from 'react'
 
 type TimeType = {
-  currentTime: number
+  title: string
+  timeZone: number
+  removeHandler: () => void
 }
 
-export default class Clock extends Component {
+export default class Clock extends Component<TimeType> {
   clockName: string
   timeZone: number
   interval: undefined | number
   removeHandler: any
+  state: {currentTime: number, close:boolean}
 
-  constructor(props) {
+  constructor(props: TimeType) {
     super(props)
-    // console.log(props)
     this.clockName = props.title
     this.timeZone = props.timeZone
     this.removeHandler = props.removeHandler
     this.interval = undefined
     this.state = {
-      currentTime: props.currentTime || Date.now(),
+      currentTime: Date.now(),
       close: false
     }
   }
 
   timeUpdate = () => {
     this.interval = setInterval(() => {
-      // console.log(this.clockName)
       this.setState({
         currentTime: Date.now(),
         close: this.state.close
@@ -37,19 +38,14 @@ export default class Clock extends Component {
     this.timeUpdate()
   }
 
-  componentDidUpdate(prevProps: Readonly<{}>, prevState: Readonly<{}>, snapshot?: any): void {
-    
-  }
-
   componentWillUnmount(): void {
-    window.clearInterval(this.interval)
+    clearInterval(this.interval)
   }
 
   render() {
     let second = Math.floor(this.state.currentTime / 1000) % 60 * 6
     let minute = Math.floor(this.state.currentTime / 1000) / 60 % 60 * 6
     let hour = (Math.floor(this.state.currentTime / 1000) / 3600 + this.timeZone) % 24 % 12 * 30
-    // console.log(this.state.currentTime / 3600 % 24 % 12 * 30)
 
     return (
       <>
